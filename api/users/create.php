@@ -10,8 +10,7 @@ $mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce", 3306);
 
 // [insert into .... values (].$_post.[)]
 $result = $mysqli->query("
-INSERT INTO 
-users(
+INSERT INTO users(
     email,
     pass,
     first_name,

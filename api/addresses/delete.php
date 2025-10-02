@@ -3,13 +3,7 @@
 $mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
 
 $result = $mysqli->query("
-UPDATE users
-SET pass='".$_POST["password"]."',
-    first_name='".$_POST["nome"]."',
-    last_name='".$_POST["cognome"]."',
-    cf='".$_POST["cf"]."',
-    tel='".$_POST["tel"]."'
-WHERE id=".$_POST["user_id"]."
+DELETE FROM `address` WHERE id=".$_POST["address_id"]."
 ");
 
 

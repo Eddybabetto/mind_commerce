@@ -3,13 +3,9 @@
 $mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
 
 $result = $mysqli->query("
-UPDATE users
-SET pass='".$_POST["password"]."',
-    first_name='".$_POST["nome"]."',
-    last_name='".$_POST["cognome"]."',
-    cf='".$_POST["cf"]."',
-    tel='".$_POST["tel"]."'
-WHERE id=".$_POST["user_id"]."
+DELETE FROM carts WHERE 
+    id_user='".$_POST["id_user"]."' 
+    AND id_product='".$_POST["id_product"]."'
 ");
 
 

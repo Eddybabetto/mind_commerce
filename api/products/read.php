@@ -1,11 +1,10 @@
 <?php
 
-$mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce", 3306);
+$mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
 
 $result = $mysqli->query("
-SELECT * FROM users ;
+SELECT * FROM products;
 ");
-
 
 $mysqli->close();
 header("Content-Type: application/json");

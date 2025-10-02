@@ -3,7 +3,7 @@
 $mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce", 3306);
 
 $result = $mysqli->query("
-SELECT * FROM users ;
+SELECT * FROM carts;
 ");
 
 
