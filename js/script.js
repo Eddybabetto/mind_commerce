@@ -43,7 +43,7 @@ async function sendData(form) {
   try {
     document.getElementById("form").innerHTML = "<div class=\"loader \"></div>"
 
-    const response = await fetch("api/users/register.php", {
+    const response = await fetch("api/users/register2.php", {
       method: "POST",
       body: formData,
     });

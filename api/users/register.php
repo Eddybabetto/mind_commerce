@@ -12,7 +12,7 @@ $telefono = $_POST["telefono"];
 $mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
 
 $results = $mysqli->query("
-SELECT email FROM users ;
+SELECT email FROM users;
 ");
 
 // $results NON è direttamente leggibile, ma possiamo trasformarlo in un dato sensato 
@@ -26,8 +26,6 @@ $array_credenziali = $results->fetch_all(MYSQLI_ASSOC);
 //      "email"=>"valore email"
 //      ],
 // ...
-
-
 //]
 
 header("Content-Type: application/json");
