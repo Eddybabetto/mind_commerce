@@ -19,11 +19,11 @@
   </div>   
   <div class="form-example">
     <label for="email">Email: </label>
-    <input type="text" name="email" id="email" required />
+    <input type="text" name="email" id="email" autocomplete="on" required />
   </div> 
    <div class="form-example">
     <label for="password">password: </label>
-    <input type="password" name="password" id="password" required />
+    <input type="password" name="password" id="password" autocomplete="off" required />
   </div>
 <div class="form-example">
     <label for="cf">CF: </label>

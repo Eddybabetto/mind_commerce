@@ -1,27 +1,73 @@
 <?php
 
-$utente=$_POST["email"];
-$password=$_POST["password"];
+$utente = $_POST["email"];
+$password = $_POST["password"];
+$nome = $_POST["nome"];
+$cognome = $_POST["cognome"];
+$cf = $_POST["cf"];
+$telefono = $_POST["telefono"];
 
-$stringa_dati_file = file_get_contents("./credenziali.json");
+// select * da crud
 
-$array_credenziali = json_decode($stringa_dati_file, true);
+$mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
+
+$results = $mysqli->query("
+SELECT email FROM users ;
+");
+
+// $results NON è direttamente leggibile, ma possiamo trasformarlo in un dato sensato 
+//con fetch_all(MYSQLI_ASSOC) che trasforma il risultato sql in array associativo
+$array_credenziali = $results->fetch_all(MYSQLI_ASSOC);
+// [
+//  0=>[
+//      "email"=>"valore email"
+//      ],
+//  1=>[
+//      "email"=>"valore email"
+//      ],
+// ...
+
+
+//]
 
 header("Content-Type: application/json");
-$trovato=false;
 
-for($n = 0; $n<count($array_credenziali) && $trovato==false; $n++){
+for ($n = 0; $n < count($array_credenziali); $n++) {
 
-  if ($utente == $array_credenziali[$n]["user"] &&  $password == $array_credenziali[$n]["password"]){
-   
-  $trovato=true;
-  break;
+  // $array_credenziali[$n] riga del db che andiamo a verificare
+
+  if ($utente == $array_credenziali[$n]["email"]) {
+
+    http_response_code(400);
+    echo json_encode(["error" => "utente già registrato"]);
+    die();
   }
-
 }
 
-echo json_encode(["logged" => $trovato]);
+$result = $mysqli->query(
+  "
+INSERT INTO users(
+    email,
+    pass,
+    first_name,
+    last_name,
+    cf,
+    tel,
+    administrator
+    ) 
+VALUES (
+    '" . $utente . "',
+    '" . $password . "',
+    '" . $nome . "',
+    '" . $cognome . "',
+    '" . $cf . "',
+    '" . $telefono . "',
+     0 )"
+);
+
+http_response_code(200);
+echo json_encode(["utente_inserito" => json_encode($result)]);
+
+// end select * da crud
+$mysqli->close();
 die();
-
-
-?>

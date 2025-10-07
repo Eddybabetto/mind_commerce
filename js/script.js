@@ -23,11 +23,11 @@ async function sendData(form) {
     alert("compilare cognome")
     return false
   }
-  if (!email || email?.length == 0 || email.indexOf("@") == -1 || !validateEmail(email)) {
-    alert("compilare email ed assicurarsi che contenga almeno una @")
+  if (!validateEmail(email)) {
+    alert("compilare email ed assicurarsi che contenga almeno una @ e sia valida")
     return false
   }
-  if (!password || password?.length == 0 || password.indexOf("@") == -1) {
+  if (!password || password?.length == 0) {
     alert("compilare password")
     return false
   }
@@ -39,9 +39,6 @@ async function sendData(form) {
     alert("compilare telefono")
     return false
   }
-
-
-
 
   try {
     document.getElementById("form").innerHTML = "<div class=\"loader \"></div>"
@@ -68,10 +65,32 @@ document.getElementById("form").addEventListener("submit", (e) => {
 })
 
 
-const validateEmail = (email) => {
+const validateEmailRegex = (email) => {
   return String(email)
     .toLowerCase()
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
 };
+
+
+function validateEmail(email) {
+  var at = email.indexOf("@");
+  var last_at = email.lastIndexOf("@");
+  var dot = email.lastIndexOf("\.");
+  return email.length > 0 &&
+    at == last_at &&
+    at > 0 &&
+    dot > at + 1 &&
+    dot < email.length &&
+    email[at + 1] !== "." &&
+    email.indexOf(" ") === -1 &&
+    email.indexOf("..") === -1;
+}
+//@test.com
+//test.aaa@testcom
+//test.aaa@test.com.
+//test.aaa@.test.com
+//test@aaa@test.com
+//test.aaa@test..com
+//test aaa@.test.com
