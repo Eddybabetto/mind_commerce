@@ -1,4 +1,5 @@
 <?php
+require("../../db/session.php");
 
 $utente = $_POST["email"];
 $password = $_POST["password"];
@@ -9,7 +10,7 @@ $telefono = $_POST["telefono"];
 
 // select * da crud
 
-$mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
+$mysqli = open_db_connection();
 
 $results = $mysqli->query("
 SELECT email FROM users;
@@ -67,5 +68,5 @@ http_response_code(200);
 echo json_encode(["utente_inserito" => json_encode($result)]);
 
 // end select * da crud
-$mysqli->close();
+close_db_connection($mysqli);
 die();

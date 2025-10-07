@@ -1,10 +1,11 @@
 <?php
+require("../../db/session.php");
 
 $utente = $_POST["email"];
 $password = $_POST["password"];
 header("Content-Type: application/json"); 
 
-$mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
+$mysqli = open_db_connection();
 
  $results = $mysqli->query(" SELECT * FROM users WHERE email='" . $utente . "' AND pass='".$password."' ; ");
 
@@ -14,11 +15,12 @@ $risultati_utente_trovato_db = $results->fetch_all();
      http_response_code(200); 
      session_start();
      $_SESSION["utente"]=json_encode($risultati_utente_trovato_db[0]);
-     echo json_encode(["utente_presente" => "Ben Tornato!"]); 
+     echo json_encode(["login" => True]); 
     } else {
        http_response_code(400); 
-       echo json_encode(["error" => "utente non esistente"]);
+       echo json_encode(["login" => False]);
        
   } 
   
-  $mysqli->close(); die();
+ close_db_connection($mysqli);
+die();

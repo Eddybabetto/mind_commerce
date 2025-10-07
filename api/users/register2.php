@@ -1,4 +1,5 @@
 <?php
+include("../../db/session.php");
 
 $utente = $_POST["email"];
 $password = $_POST["password"];
@@ -8,8 +9,7 @@ $cf = $_POST["cf"];
 $telefono = $_POST["telefono"];
 
 // select * da crud
-
-$mysqli = new mysqli("127.0.0.1", "root", "", "mind_commerce");
+$mysqli = open_db_connection();
 
 $results = $mysqli->query("
 SELECT email FROM users WHERE email='" . $utente . "';
@@ -51,6 +51,6 @@ VALUES (
   // end select * da crud
 }
 
+close_db_connection($mysqli);
 
-$mysqli->close();
 die();
