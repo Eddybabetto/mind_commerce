@@ -2,8 +2,8 @@ async function sendData(form) {
 
   const formData = new FormData(form);
   formData.append("submit", "true");
- //formdata, oggetto complesso ritornato da new FormData(), 
-  
+  //formdata, oggetto complesso ritornato da new FormData(), 
+
   try {
     document.getElementById("form").innerHTML = "<div class=\"loader \"></div>"
 
@@ -13,8 +13,8 @@ async function sendData(form) {
     });
 
     oggetto_risposta = await response.json()
-
-    document.getElementById("form").innerHTML = "<h1>Ben fatto, api ritorna " + oggetto_risposta.insert + "</h1>"
+    
+    window.location = oggetto_risposta.redirect
 
   } catch (e) {
     console.error(e);

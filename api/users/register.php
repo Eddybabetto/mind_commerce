@@ -29,6 +29,7 @@ $array_credenziali = $results->fetch_all(MYSQLI_ASSOC);
 // ...
 //]
 
+// $array_credenziali[0]["mail"];
 header("Content-Type: application/json");
 
 for ($n = 0; $n < count($array_credenziali); $n++) {
