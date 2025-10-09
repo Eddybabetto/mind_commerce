@@ -1,5 +1,6 @@
 <?php
-include("../../db/session.php");
+require("../../db/session.php");
+require("../../env/getenv.php");
 
 $utente = $_POST["email"];
 $password = $_POST["password"];
@@ -11,9 +12,9 @@ $telefono = $_POST["telefono"];
 // select * da crud
 $mysqli = open_db_connection();
 
-$results = $mysqli->query("
-SELECT email FROM users WHERE email='" . $utente . "';
-");
+$query_preparata = "SELECT * FROM users WHERE email= ? ; ";
+
+$results = $mysqli->execute_query($query_preparata, [$utente]);
 
 $risultati_utente_trovato_db = $results->fetch_all();
 
@@ -24,7 +25,10 @@ if (count($risultati_utente_trovato_db) != 0) {
   echo json_encode(["error" => "utente già registrato"]);
 
 } else {
-  $result = $mysqli->query(
+
+  $hash_password = hash('sha256', $password . getenvterm("SALT"));
+
+  $query_preparata = $mysqli->prepare(
     "
 INSERT INTO users(
     email,
@@ -36,15 +40,16 @@ INSERT INTO users(
     administrator
     ) 
 VALUES (
-    '" . $utente . "',
-    '" . $password . "',
-    '" . $nome . "',
-    '" . $cognome . "',
-    '" . $cf . "',
-    '" . $telefono . "',
-     0 )"
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    0 )"
   );
-
+  $query_preparata->bind_param("ssssss", $utente, $hash_password, $nome, $cognome, $cf, $telefono);
+  $result = $query_preparata->execute(); //ritorna true o false in base se la query è stata fatta o no
   http_response_code(200);
   echo json_encode(["utente_inserito" => json_encode($result)]);
 
