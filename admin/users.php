@@ -7,8 +7,12 @@ if (!isset($_SESSION["utente"])) {
 
 $utente = json_decode($_SESSION["utente"], true);
 if ($utente["administrator"] == 0) {
-  header("Location: http://localhost/mind_commerce/index.php");
+  header("Location: /index.php");
   die();
+}
+
+if(isset($_GET["error"])){
+  echo "<script>alert('".urldecode($_GET["error"])."')</script>";
 }
 
 require("../db/session.php");
@@ -84,7 +88,7 @@ require("../db/session.php");
       $mysqli = open_db_connection();
 
       $results = $mysqli->query("
-        SELECT * FROM users ;
+        SELECT * FROM users WHERE delete_at IS NULL ;
         ");
       $array_utenti = $results->fetch_all(MYSQLI_ASSOC);
 
@@ -96,8 +100,49 @@ require("../db/session.php");
             <td>" . $array_utenti[$n]["first_name"] . " " . $array_utenti[$n]["last_name"] . "</td>
             <td>" . $array_utenti[$n]["email"] . "</td>
             <td>
-              <div class='btn-edit' id-utente='" . $array_utenti[$n]["id"] . "'>edit</div> 
-              <a href='/users/edit.php?id=" . $array_utenti[$n]["id"] . "'>edit con a</a>
+               <a href=\"user_delete.php?id=" . $array_utenti[$n]["id"] . "&soft_delete=true\"><button>Elimina utente</button></a>
+               <a href=\"users_update.php?id_user=" . $array_utenti[$n]["id"] . "\"><button>Edita utente</button></a>
+            </td>
+          </tr>
+        ";
+      }
+
+      close_db_connection($mysqli);
+
+      ?>
+    </tbody>
+  </table>
+  <br/>
+  <div class="centrato">UTENTI ELIMINATI</div>
+  <table id="tabella" class="centrato">
+    <thead>
+   
+      <tr>
+        <th>ID</th>
+        <th>Nome Cognome</th>
+        <th>Email</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php
+
+      $mysqli = open_db_connection();
+
+      $results = $mysqli->query("
+        SELECT * FROM users WHERE delete_at IS NOT NULL ;
+        ");
+      $array_utenti = $results->fetch_all(MYSQLI_ASSOC);
+
+      for ($n = 0; $n < count($array_utenti); $n++) {
+
+        echo "
+          <tr>
+            <td>" . $array_utenti[$n]["id"] . "</td>
+            <td>" . $array_utenti[$n]["first_name"] . " " . $array_utenti[$n]["last_name"] . "</td>
+            <td>" . $array_utenti[$n]["email"] . "</td>
+            <td>
+               <a href=\"user_undelete.php?id=" . $array_utenti[$n]["id"] . "\"><button>Ripristina utente</button></a>
             </td>
           </tr>
         ";
@@ -109,6 +154,8 @@ require("../db/session.php");
     </tbody>
   </table>
 
+
+  <a href="users_create.php"><button>Aggiungi utente</button></a>
 </body>
 <script>
 
