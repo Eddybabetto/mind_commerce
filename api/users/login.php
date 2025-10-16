@@ -21,9 +21,9 @@ if (count($risultati_utente_trovato_db) != 0) {
    $_SESSION["utente"] = json_encode($risultati_utente_trovato_db[0]);
    $utente = $risultati_utente_trovato_db[0];
    if ($utente["administrator"] == 1) {
-      echo json_encode(["redirect" => "/mind_commerce/admin/index.php"]);
+      echo json_encode(["redirect" => "admin/index.php"]);
    } else {
-      echo json_encode(["redirect" => "/mind_commerce"]);
+      echo json_encode(["redirect" => ""]);
    }
 
    die();

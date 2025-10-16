@@ -1,20 +1,17 @@
 <?php
-session_start();
-if (!isset($_SESSION["utente"])) {
-  echo "non loggato";
-  die();
-}
+include("../admin_session.php");
+require("../../db/session.php");
 
-$utente_sessione = json_decode($_SESSION["utente"], true);
-if ($utente_sessione["administrator"] == 0) {
-  header("Location: /index.php");
-  die();
-}
-
-require("../db/session.php");
-require("../env/getenv.php");
+$utente = "";
+$password = "";
+$nome = "";
+$cognome = "";
+$cf = "";
+$telefono = "";
+$admin = "";
+$mysqli = open_db_connection();
 if (isset($_POST["submit"])) {
-  //crea utente
+  //update utente
 
 
   $utente = $_POST["email"];
@@ -26,59 +23,57 @@ if (isset($_POST["submit"])) {
   $admin = $_POST["admin"] || 0;
 
   // select * da crud
-  $mysqli = open_db_connection();
 
-  $query_preparata = "SELECT * FROM users WHERE email= ? AND delete_at IS NULL ; ";
 
-  $results = $mysqli->execute_query($query_preparata, [$utente]);
+  $query_preparata = "SELECT * FROM users WHERE email= ? AND delete_at IS NULL AND id <> ?; ";
+
+  $results = $mysqli->execute_query($query_preparata, [$utente, $_POST["id_user"]]);
 
   $risultati_utente_trovato_db = $results->fetch_all();
 
   if (count($risultati_utente_trovato_db) != 0) {
 
-    echo "<script>alert(\"Utente già registrato\")</script>";
+    echo "<script>alert(\"Un altro utente ha la stessa mail impostata, non posso aggiornarlo\")</script>";
   } else {
 
     $hash_password = hash('sha256', $password . getenvterm("SALT"));
 
     $query_preparata = $mysqli->prepare(
-      "
-INSERT INTO users(
-    email,
-    pass,
-    first_name,
-    last_name,
-    cf,
-    tel,
-    administrator
-    ) 
-VALUES (
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ? )"
+      $query_preparata = "UPDATE users
+      SET email=?,
+          pass=?,
+          first_name=?,
+          last_name=?,
+          cf=?,
+          tel=?,
+          administrator=?
+      WHERE id=? "
     );
-    $query_preparata->bind_param("ssssssi", $utente, $hash_password, $nome, $cognome, $cf, $telefono, $admin);
+    $query_preparata->bind_param("ssssssii", $utente, $hash_password, $nome, $cognome, $cf, $telefono, $admin, $_POST["id_user"]);
     $result = $query_preparata->execute(); //ritorna true o false in base se la query è stata fatta o no
 
-    echo "<script>alert(\"Utente registrato correttamente\")</script>";
-
-// pulisco variabili se registro utente
-    unset($utente);
-    unset($password);
-    unset($nome);
-    unset($cognome);
-    unset($cf);
-    unset($telefono);
-    unset($admin);
+    echo "<script>alert(\"Utente aggiornato correttamente\")</script>";
   }
+} else {
+  if (isset($_GET["id_user"])) {
 
-  close_db_connection($mysqli);
+    $query_preparata = "SELECT * FROM users WHERE delete_at IS NULL AND id = ?; ";
+
+    $results = $mysqli->execute_query($query_preparata, [$_GET["id_user"]]);
+
+    $risultati_utente_trovato_db = $results->fetch_all(MYSQLI_ASSOC);
+
+    $utente = $risultati_utente_trovato_db[0]["email"];
+    $password = "";
+    $nome = $risultati_utente_trovato_db[0]["first_name"];
+    $cognome =  $risultati_utente_trovato_db[0]["last_name"];
+    $cf =  $risultati_utente_trovato_db[0]["cf"];
+    $telefono =  $risultati_utente_trovato_db[0]["tel"];
+    $admin =  $risultati_utente_trovato_db[0]["administrator"];
+  }
 }
 
+close_db_connection($mysqli);
 ?>
 
 
@@ -89,14 +84,15 @@ VALUES (
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Crea utente ADMIN</title>
-  <style href="css/index.css"></style>
+  <style href="<?= getenvterm("DOMAIN") ?>css/index.css"></style>
 </head>
 
 <body>
   <?php
-  include("menu.php");
+  include("../menu.php");
   ?>
   <form method="post" class="form-example" id="form">
+    <input type="hidden" name="id_user" value="<?php echo $_REQUEST["id_user"] ?>">
     <div class="form-example">
       <label for="name">Nome: </label>
       <input type="text" name="nome" id="name" <?php echo isset($nome) ? "value='" . $nome . "'" : "" ?> required />
@@ -128,14 +124,8 @@ VALUES (
     <div class="form-example">
       <input type="submit" name="submit" value="invia" />
     </div>
-
   </form>
-
 
 </body>
 
 </html>
-
-<?php
-
-?>

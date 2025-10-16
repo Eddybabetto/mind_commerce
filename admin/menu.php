@@ -1,23 +1,18 @@
-<ul class="horizontal">
-  <li><a href="/mind_commerce/admin/index.php">Home</a></li>
-  <li><a href="/mind_commerce/admin/users.php">Users</a></li>
-</ul>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
-<style>
-  .horizontal {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-  }
-
-  ul {
-    display: block;
-    list-style-type: disc;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    padding-inline-start: 40px;
-    unicode-bidi: isolate;
-  }
-</style>
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">MIND COMMERCE ADMIN</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="<?php echo getenvterm("DOMAIN") ?>admin">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<?= getenvterm("DOMAIN") ?>admin/users">Utenti</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,18 +1,6 @@
 <?php
-session_start();
-if (!isset($_SESSION["utente"])) {
-  echo "non loggato";
-  die();
-}
-
-$utente = json_decode($_SESSION["utente"], true);
-if ($utente["administrator"] == 0) {
-  header("Location: http://localhost/mind_commerce/index.php");
-  die();
-}
-
+include("admin_session.php");
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +11,13 @@ if ($utente["administrator"] == 0) {
 </head>
 
 <body>
-  <a href="users.php">Vedi tutti gli utenti registrati</a>
+
+  <?php
+  include("menu.php");
+  ?>
+
+
+home page amministratore
 </body>
 
 </html>

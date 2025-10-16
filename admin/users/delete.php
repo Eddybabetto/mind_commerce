@@ -1,17 +1,9 @@
 <?php
-session_start();
-if (!isset($_SESSION["utente"])) {
-    echo "non loggato";
-    die();
-}
 
-$utente = json_decode($_SESSION["utente"], true);
-if ($utente["administrator"] == 0) {
-    header("Location: /index.php");
-    die();
-}
+include("../admin_session.php");
 
-require("../db/session.php");
+require("../../db/session.php");
+
 $id_utente = $_GET["id"];
 $soft_delete = $_GET["soft_delete"] || false; //questo sarà true o false e deciderà il tipo di delete
 
@@ -26,11 +18,11 @@ if ($soft_delete) {
         $now = date("Y-m-d H:i:s");
         $results = $mysqli->execute_query($query_preparata, [$now, $id_utente]);
     } catch (Exception $e) {
-        header("Location: users.php?error=" . urlencode("utente non eliminato a causa di un errore"));
+        header("Location: " . getenvterm("DOMAIN") . "admin/users?error=" . urlencode("utente non eliminato a causa di un errore"));
         die();
     }
 
-    header("Location: users.php");
+    header("Location: " . getenvterm("DOMAIN")."admin/users");
     die();
 } else {
     // hard delete classico
@@ -39,11 +31,11 @@ if ($soft_delete) {
 
         $results = $mysqli->execute_query($query_preparata, [$id_utente]);
     } catch (Exception $e) {
-        header("Location: users.php?error=" . urlencode("utente non eliminato a causa di un errore"));
+        header("Location: ". getenvterm("DOMAIN") . "admin/users?error=" . urlencode("utente non eliminato a causa di un errore"));
         die();
     }
 
-    header("Location: users.php");
+    header("Location: " .getenvterm("DOMAIN") . "admin/users");
     die();
 }
 
