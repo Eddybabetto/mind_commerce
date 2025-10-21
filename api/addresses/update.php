@@ -6,7 +6,7 @@ $result = $mysqli->query("
 UPDATE `address`
 SET via='".$_POST["via"]."',
     numero_civico='".$_POST["via"]."',
-    città='".$_POST["via"]."',
+    citta='".$_POST["via"]."',
     provincia='".$_POST["via"]."',
     cap='".$_POST["via"]."',
     regione='".$_POST["via"]."',

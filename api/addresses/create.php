@@ -7,7 +7,7 @@ INSERT INTO
 `address`(
     via, 
     numero_civico, 
-    città, 
+    citta, 
     provincia, 
     cap, 
     regione, 

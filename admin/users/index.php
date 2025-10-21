@@ -1,7 +1,10 @@
 <?php
 include("../admin_session.php");
+include("../header.php");
 if (isset($_GET["error"])) {
-  echo "<script>alert('" . urldecode($_GET["error"]) . "')</script>";
+  echo '<div class="alert alert-success" role="alert">'. urldecode($_GET["error"]) .'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button></div>';
 }
 
 require("../../db/session.php");
@@ -9,52 +12,6 @@ require("../../db/session.php");
 
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pagina lista utenti</title>
-  <style>
-    table {
-      border-collapse: collapse;
-      border: 2px solid rgb(140 140 140);
-      font-family: sans-serif;
-      font-size: 0.8rem;
-      letter-spacing: 1px;
-    }
-
-    thead,
-    tfoot {
-      background-color: rgb(228 240 245);
-    }
-
-    th,
-    td {
-      border: 1px solid rgb(160 160 160);
-      padding: 8px 10px;
-      text-align: center;
-    }
-
-    tbody>tr:nth-of-type(even) {
-      background-color: rgb(237 238 242);
-    }
-
-    tfoot th {
-      text-align: right;
-    }
-
-    tfoot td {
-      font-weight: bold;
-    }
-
-    .centrato {
-      margin: auto;
-      justify-self: anchor-center;
-      text-align: center;
-    }
-  </style>
-
-</head>
 
 <body>
 
@@ -88,28 +45,45 @@ require("../../db/session.php");
           ON u.id=indirizzi.id_user 
         WHERE u.delete_at IS NULL;
         ");
-      $array_utenti = $results->fetch_all(MYSQLI_ASSOC);
+      $array_utenti = $results->fetch_all(MYSQLI_ASSOC); // lunghezza 3
 
       // [
-      // [id => ...
-      // nome=> ...
-      // cognome => ....
-      // via=>...
-      // ....
-      //   ],
-      // [id => ...
-      // nome=> ...
-      // cognome => ....
-      // via=>...
-      // ....
+        // [id => ...
+        // nome=> ...
+        // cognome => ....
+        // via=>...
+        // ....
+        //   ],
+        // [id => ...
+        // nome=> ...
+        // cognome => ....
+        // via=>...
+        // ....
+        // ]
       // ]
-      // ]
+
+
+// [
+      //"id_utente"=> [id => id utente,
+          // nome=> nome utente
+          // indirizzi => [
+                // [id_indirizzo,
+                // via,
+                // comune], 
+                // [id_indirizzo,
+                // via,
+                // comune]
+          // ]
+        // ]
+// ]
+
+
+
 
       function funzione_che_ordina_gli_utenti($acc, $item)
       {
 
         $indirizzi_vecchi = $acc[$item["id_utente"]]["indirizzi"] ?? [];
-        // array_push($indirizzi_vecchi,  $acc[$item["id_utente"]]["indirizzi"]);
 
         $array_indirizzo = [
           "id" => $item["id"],
@@ -121,7 +95,9 @@ require("../../db/session.php");
           "regione" => $item["regione"],
           "paese" => $item["paese"]
         ];
+
         array_push($indirizzi_vecchi, $array_indirizzo);
+        
         $acc[$item["id_utente"]] = [
           "id_utente" => $item["id_utente"],
           "nome" => $item["nome"],
@@ -129,12 +105,11 @@ require("../../db/session.php");
           "email" => $item["email"],
           "indirizzi" => $indirizzi_vecchi
         ];
+
         return $acc;
       }
 
       $array_pulito = array_reduce($array_utenti, "funzione_che_ordina_gli_utenti", []);
-
-
 
       ?>
 
@@ -183,7 +158,7 @@ require("../../db/session.php");
       $mysqli = open_db_connection();
 
       $results = $mysqli->query("
-        SELECT * FROM users WHERE delete_at IS NOT NULL ;
+        SELECT * FROM users WHERE delete_at IS NOT NULL;
         ");
       $array_utenti = $results->fetch_all(MYSQLI_ASSOC);
 
