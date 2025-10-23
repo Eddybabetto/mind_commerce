@@ -1,10 +1,11 @@
 <?php
 include("../admin_session.php");
 include("../header.php");
+
 if (isset($_GET["error"])) {
   echo '<div class="alert alert-success" role="alert">'. urldecode($_GET["error"]) .'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button></div>';
+         <span aria-hidden="true">&times;</span>
+      </button></div>';
 }
 
 require("../../db/session.php");
@@ -39,11 +40,11 @@ require("../../db/session.php");
           u.first_name as nome, 
           u.last_name as cognome, 
           u.email, 
-          u.delete_at, 
-          indirizzi.* 
-        FROM users as u LEFT JOIN address as indirizzi 
-          ON u.id=indirizzi.id_user 
-        WHERE u.delete_at IS NULL;
+          u.deleted_at, 
+          i.* 
+        FROM users as u LEFT JOIN addresses as i 
+          ON u.id=i.user_id 
+        WHERE u.deleted_at IS NULL;
         ");
       $array_utenti = $results->fetch_all(MYSQLI_ASSOC); // lunghezza 3
 
@@ -87,13 +88,13 @@ require("../../db/session.php");
 
         $array_indirizzo = [
           "id" => $item["id"],
-          "via" => $item["via"],
-          "numero_civico" => $item["numero_civico"],
-          "città" => $item["città"],
-          "provincia" => $item["provincia"],
-          "cap" => $item["cap"],
-          "regione" => $item["regione"],
-          "paese" => $item["paese"]
+          "via" => $item["street"],
+          "numero_civico" => $item["street_n"],
+          "città" => $item["city"],
+          "provincia" => $item["district"],
+          "cap" => $item["zip"],
+          "regione" => $item["region"],
+          "paese" => $item["state"]
         ];
 
         array_push($indirizzi_vecchi, $array_indirizzo);
@@ -158,7 +159,7 @@ require("../../db/session.php");
       $mysqli = open_db_connection();
 
       $results = $mysqli->query("
-        SELECT * FROM users WHERE delete_at IS NOT NULL;
+        SELECT * FROM users WHERE deleted_at IS NOT NULL;
         ");
       $array_utenti = $results->fetch_all(MYSQLI_ASSOC);
 
@@ -173,12 +174,12 @@ require("../../db/session.php");
               <ul>";
 
         $results_indirizzi = $mysqli->query("
-        SELECT * FROM address WHERE id_user='" . $array_utenti[$n]["id"] . "' ;
+        SELECT * FROM addresses WHERE user_id='" . $array_utenti[$n]["id"] . "' ;
         ");
         $array_indirizzi = $results_indirizzi->fetch_all(MYSQLI_ASSOC);
 
         foreach ($array_indirizzi as $indirizzo_utente) {
-          echo "<li>" . $indirizzo_utente["via"] . " " . $indirizzo_utente["città"] . " " . $indirizzo_utente["cap"] . "</li> ";
+          echo "<li>" . $indirizzo_utente["street"] . " " . $indirizzo_utente["city"] . " " . $indirizzo_utente["zip"] . "</li> ";
         }
         echo "
               </ul>

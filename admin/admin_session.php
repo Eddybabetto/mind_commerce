@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+error_reporting(E_ALL);
 session_start();
 // require dentro un file di cui viene fatto il require, come in questo caso dove admin_session viene richiesto dai file dentro la cartella users
 // va a prendere il path dell'ultimo file chiamante (esempio /users/index.php), quindi la cartella attuale risulta essere quella di esempio /users/index.php

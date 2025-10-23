@@ -16,14 +16,14 @@ require("../../db/session.php");
 
 $mysqli = open_db_connection();
 
-$query_preparata = " SELECT * FROM address WHERE id_user=? LIMIT 2 OFFSET ?";
+$query_preparata = " SELECT * FROM addresses WHERE user_id=? LIMIT 2 OFFSET ?";
 
 $results = $mysqli->execute_query($query_preparata, [$_GET["id_user"], $_GET["page"]*2]);
 
 $risultati_indirizzi = $results->fetch_all(MYSQLI_ASSOC);
 
 
-$query_preparata_tot = " SELECT COUNT(*) as tot FROM address WHERE id_user=? ";
+$query_preparata_tot = " SELECT COUNT(*) as tot FROM addresses WHERE user_id=? ";
 
 $results_tot = $mysqli->execute_query($query_preparata_tot, [$_GET["id_user"]]);
 

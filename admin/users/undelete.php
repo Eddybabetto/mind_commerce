@@ -9,7 +9,7 @@ $mysqli = open_db_connection();
     // soft delete
 
     try {
-        $query_preparata = "UPDATE users SET delete_at=? WHERE id=? ";
+        $query_preparata = "UPDATE users SET deleted_at=? WHERE id=? ";
         $delete_at = NULL;
         $results = $mysqli->execute_query($query_preparata, [$delete_at, $id_utente]);
     } catch (Exception $e) {

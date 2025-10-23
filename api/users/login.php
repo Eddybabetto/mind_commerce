@@ -9,7 +9,7 @@ header("Content-Type: application/json");
 $mysqli = open_db_connection();
 $hash_password = hash('sha256', $password . getenvterm("SALT"));
 
-$query_preparata = "SELECT * FROM users WHERE email=? AND pass=? AND delete_at IS NULL ; ";
+$query_preparata = "SELECT * FROM users WHERE email=? AND pass=? AND deleted_at IS NULL ; ";
 
 $results = $mysqli->execute_query($query_preparata, [$utente, $hash_password]);
 

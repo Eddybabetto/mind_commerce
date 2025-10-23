@@ -1,5 +1,6 @@
 <?php
 include("../admin_session.php");
+include("../header.php");
 require("../../db/session.php");
 
 $utente = "";
@@ -25,7 +26,7 @@ if (isset($_POST["submit"])) {
   // select * da crud
 
 
-  $query_preparata = "SELECT * FROM users WHERE email= ? AND delete_at IS NULL AND id <> ?; ";
+  $query_preparata = "SELECT * FROM users WHERE email= ? AND deleted_at IS NULL AND id <> ?; ";
 
   $results = $mysqli->execute_query($query_preparata, [$utente, $_POST["id_user"]]);
 
@@ -57,7 +58,7 @@ if (isset($_POST["submit"])) {
 } else {
   if (isset($_GET["id_user"])) {
 
-    $query_preparata = "SELECT * FROM users WHERE delete_at IS NULL AND id = ?; ";
+    $query_preparata = "SELECT * FROM users WHERE deleted_at IS NULL AND id = ?; ";
 
     $results = $mysqli->execute_query($query_preparata, [$_GET["id_user"]]);
 

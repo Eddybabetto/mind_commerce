@@ -63,12 +63,12 @@ require("../../../db/session.php");
 
             risultato_json = await results.json()
 
-            if(risultato_json.indirizzi.length==0){
-                pagina_attuale=n_pagina-1
+            if (risultato_json.indirizzi.length == 0) {
+                pagina_attuale = n_pagina - 1
                 return
             }
 
-  
+
             bodyTabella.innerHTML = "";
             risultato_json.indirizzi.forEach((indirizzo) => {
 
@@ -81,19 +81,19 @@ require("../../../db/session.php");
                 let td_azioni = document.createElement("td");
 
 
-                td_via_civico.innerText = indirizzo["via"] + " " + indirizzo["numero_civico"];
+                td_via_civico.innerText = indirizzo["street"] + " " + indirizzo["street_n"];
                 row.appendChild(td_via_civico)
 
-                td_citta_prov.innerText = indirizzo["citta"] + " " + indirizzo["provincia"];
+                td_citta_prov.innerText = indirizzo["city"] + " " + indirizzo["district"];
                 row.appendChild(td_citta_prov)
 
-                td_cap.innerText = indirizzo["cap"];
+                td_cap.innerText = indirizzo["zip"];
                 row.appendChild(td_cap)
 
-                td_reg.innerText = indirizzo["regione"];
+                td_reg.innerText = indirizzo["region"];
                 row.appendChild(td_reg)
 
-                td_state.innerText = indirizzo["paese"];
+                td_state.innerText = indirizzo["state"];
                 row.appendChild(td_state)
 
                 row.appendChild(td_azioni)
@@ -105,8 +105,8 @@ require("../../../db/session.php");
 
             })
 
-            document.getElementById("pag").innerText=n_pagina+1
-            document.getElementById("pag_tot").innerText=Math.ceil(risultato_json.tot/risultato_json.nrows)
+            document.getElementById("pag").innerText = n_pagina + 1
+            document.getElementById("pag_tot").innerText = Math.ceil(risultato_json.tot / risultato_json.nrows)
 
 
         }
@@ -115,7 +115,7 @@ require("../../../db/session.php");
 
 
         document.getElementById("prec").addEventListener("click", () => {
-            if (pagina_attuale-1 < 0) {
+            if (pagina_attuale - 1 < 0) {
                 pagina_attuale = 0
                 return
             } else {
@@ -123,7 +123,7 @@ require("../../../db/session.php");
             }
         })
         document.getElementById("succ").addEventListener("click", () => {
-             if (pagina_attuale+1 <= 0) {
+            if (pagina_attuale + 1 <= 0) {
                 return
             } else {
                 loadData(++pagina_attuale)

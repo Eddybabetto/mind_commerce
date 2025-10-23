@@ -14,7 +14,7 @@ if ($soft_delete) {
     // soft delete
 
     try {
-        $query_preparata = "UPDATE users SET delete_at=? WHERE id=? ";
+        $query_preparata = "UPDATE users SET deleted_at=? WHERE id=? ";
         $now = date("Y-m-d H:i:s");
         $results = $mysqli->execute_query($query_preparata, [$now, $id_utente]);
     } catch (Exception $e) {
