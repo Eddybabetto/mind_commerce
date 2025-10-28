@@ -2,16 +2,19 @@
 include("../admin_session.php");
 include("../header.php");
 require("../../db/session.php");
+
 if (isset($_POST["submit"])) {
   // crea prodotto
 
 
   $target_dir = "../../uploads/images/"; //delimito la cartella degli upload 
-  $target_file = $target_dir . basename($_POST["filename"] ? $_POST["filename"] : $_POST["SKU"]); // decido che nome deve avere il file, in questo caso posso settare un override
+  $target_file = $target_dir . basename($_POST["filename"] ? $_POST["filename"] : $_POST["SKU"]); // $_FILES["file"]["name"] decido che nome deve avere il file, in questo caso posso settare un override
+  // $target_file = $target_dir . basename($_FILES["file"]["name"]); // $_FILES["file"]["name"] decido che nome deve avere il file, in questo caso posso settare un override
   $continue = true; // variabile accessoria per i controlli
   $file_type = explode("/", strtolower($_FILES["file"]["type"]))[1]; //recupero il tipo di file, di solito il fo0rmato è [gruppo generico]/[estensione specifica]
 
-  if (file_exists($target_file)) {
+
+  if (file_exists($$target_file.".".$file_type)) {
     echo "<script>alert(\"Il file esiste già\")</script>";
 
     die();
@@ -26,6 +29,12 @@ if (isset($_POST["submit"])) {
     die();
   }
 
+  if($_FILES['file']['size']>3145728){ // maggiore di 3MB
+     echo "<script>alert(\"File troppo grande\")</script>";
+
+    die();
+  }
+
 
   if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file.".".$file_type)) { //muovo il file dalla richiesta al path (viene scritto un nuovo file e copiato il contenuto)
     echo "<script>alert(\"File caricato\")</script>";
@@ -35,7 +44,7 @@ if (isset($_POST["submit"])) {
   }
 
   $SKU = $_POST["SKU"];
-  $name = $_POST["name"];
+  $name = $_POST["product"];
   $description = $_POST["description"];
   $stock = $_POST["stock"];
   $categories = $_POST["categories"];
@@ -61,8 +70,14 @@ VALUES (
     ?,
     ? )"
   );
+
   $query_preparata->bind_param("sssisd", $SKU, $name, $description, $stock, $categories, $price);
+
+  try {
   $result = $query_preparata->execute(); //ritorna true o false in base se la query è stata fatta o no
+} catch (mysqli_sql_exception) {
+    printf("Error - SQLSTATE %s.\n", $mysqli->sqlstate);
+}
 
   echo "<script>alert(\"Prodotto inserito correttamente\")</script>";
 
@@ -96,7 +111,7 @@ VALUES (
   <form method="post" class="form-example" id="form" enctype="multipart/form-data">
     <div class="form-example">
       <label for="name">Nome: </label>
-      <input type="text" name="name" id="name" <?php echo isset($name) ? "value='" . $nome . "'" : "" ?> required />
+      <input type="text" name="product" id="name" <?php echo isset($name) ? "value='" . $nome . "'" : "" ?> required />
     </div>
     <div class="form-example">
       <label for="SKU">SKU: </label>
