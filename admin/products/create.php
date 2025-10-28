@@ -14,7 +14,7 @@ if (isset($_POST["submit"])) {
   $file_type = explode("/", strtolower($_FILES["file"]["type"]))[1]; //recupero il tipo di file, di solito il fo0rmato è [gruppo generico]/[estensione specifica]
 
 
-  if (file_exists($$target_file.".".$file_type)) {
+  if (file_exists($$target_file . "." . $file_type)) {
     echo "<script>alert(\"Il file esiste già\")</script>";
 
     die();
@@ -29,14 +29,14 @@ if (isset($_POST["submit"])) {
     die();
   }
 
-  if($_FILES['file']['size']>3145728){ // maggiore di 3MB
-     echo "<script>alert(\"File troppo grande\")</script>";
+  if ($_FILES['file']['size'] > 3145728) { // maggiore di 3MB
+    echo "<script>alert(\"File troppo grande\")</script>";
 
     die();
   }
 
 
-  if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file.".".$file_type)) { //muovo il file dalla richiesta al path (viene scritto un nuovo file e copiato il contenuto)
+  if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file . "." . $file_type)) { //muovo il file dalla richiesta al path (viene scritto un nuovo file e copiato il contenuto)
     echo "<script>alert(\"File caricato\")</script>";
   } else {
     //se dovesse fallire, ritorno un errore
@@ -74,10 +74,10 @@ VALUES (
   $query_preparata->bind_param("sssisd", $SKU, $name, $description, $stock, $categories, $price);
 
   try {
-  $result = $query_preparata->execute(); //ritorna true o false in base se la query è stata fatta o no
-} catch (mysqli_sql_exception) {
+    $result = $query_preparata->execute(); //ritorna true o false in base se la query è stata fatta o no
+  } catch (mysqli_sql_exception) {
     printf("Error - SQLSTATE %s.\n", $mysqli->sqlstate);
-}
+  }
 
   echo "<script>alert(\"Prodotto inserito correttamente\")</script>";
 
@@ -119,12 +119,9 @@ VALUES (
     </div>
     <div class="form-example">
       <label for="description">Descrizione: </label>
-
       <textarea id="story" name="description" rows="5" cols="33" required>
- <?php echo isset($description) ?  $description : "" ?>
-</textarea>
-
-
+          <?php echo isset($description) ?  $description : "" ?>
+      </textarea>
     </div>
     <div class="form-example">
       <label for="stock">Giacenza: </label>
