@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">MIND COMMERCE ADMIN</a>
@@ -9,6 +8,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="<?= getenvterm("DOMAIN") ?>admin/users">Utenti</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<?= getenvterm("DOMAIN") ?>admin/products">Prodotti</a>
         </li>
       </ul>
     </div>
