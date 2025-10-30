@@ -216,10 +216,11 @@ VALUES " . $values_string
 <script>
   function clearForm(cloned_element) {
     let all_input = cloned_element.querySelectorAll("input")
+    let textareainput = cloned_element.querySelector("textarea")
+    textareainput.value=""
     let all_input_array = Array.from(all_input)
     all_input_array.forEach(input => {
       input.value = ""
-      input.innerText = ""
     })
 
   }
