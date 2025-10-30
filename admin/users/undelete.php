@@ -10,8 +10,8 @@ $mysqli = open_db_connection();
 
     try {
         $query_preparata = "UPDATE users SET deleted_at=? WHERE id=? ";
-        $delete_at = NULL;
-        $results = $mysqli->execute_query($query_preparata, [$delete_at, $id_utente]);
+        $deleted_at = NULL;
+        $results = $mysqli->execute_query($query_preparata, [$deleted_at, $id_utente]);
     } catch (Exception $e) {
         header("Location: " . getenvterm("DOMAIN")."?error=" . urlencode("utente non eliminato a causa di un errore"));
         die();

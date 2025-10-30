@@ -50,7 +50,7 @@ async function sendData(form) {
 
     oggetto_risposta = await response.json()
 
-    document.getElementById("form").innerHTML = "<h1>Ben fatto, api ritorna " + oggetto_risposta.insert + "</h1>"
+    if (oggetto_risposta.utente_inserito) window.location = "login.php"
 
   } catch (e) {
     console.error(e);

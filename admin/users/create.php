@@ -1,6 +1,8 @@
 <?php
 include("../admin_session.php");
+include("../header.php");
 require("../../db/session.php");
+error_reporting(E_ALL);
 if (isset($_POST["submit"])) {
   //crea utente
 
@@ -15,7 +17,7 @@ if (isset($_POST["submit"])) {
   // select * da crud
   $mysqli = open_db_connection();
 
-  $query_preparata = "SELECT * FROM users WHERE email= ? AND delete_at IS NULL ; ";
+  $query_preparata = "SELECT * FROM users WHERE email= ? AND deleted_at IS NULL ; ";
 
   $results = $mysqli->execute_query($query_preparata, [$utente]);
 
