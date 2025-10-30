@@ -234,8 +234,7 @@ VALUES " . $values_string
       clearForm(copiaProdotto)
       copiaProdotto.setAttribute('id', "");
       let contenitore = document.getElementById('form');
-      document.quer
-      contenitore.insertBefore(copiaProdotto, prodottoDaCopiare);
+      contenitore.insertAdjacentElement("afterbegin", copiaProdotto);
     }
 
   );
