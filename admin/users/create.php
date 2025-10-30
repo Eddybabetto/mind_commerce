@@ -2,7 +2,6 @@
 include("../admin_session.php");
 include("../header.php");
 require("../../db/session.php");
-error_reporting(E_ALL);
 if (isset($_POST["submit"])) {
   //crea utente
 

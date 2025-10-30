@@ -16,6 +16,7 @@ $results = $mysqli->execute_query($query_preparata, [$utente, $hash_password]);
 $risultati_utente_trovato_db = $results->fetch_all(MYSQLI_ASSOC);
 
 if (count($risultati_utente_trovato_db) != 0) {
+   // login ok
    http_response_code(200);
    session_start();
    $_SESSION["utente"] = json_encode($risultati_utente_trovato_db[0]);

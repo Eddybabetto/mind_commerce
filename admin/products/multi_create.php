@@ -7,32 +7,87 @@ if (isset($_POST["submit"])) {
 
   // crea prodotto
 
-$_POST;
+  function saveImage($file)
+  {
 
-$array_pulito=[];
+    $target_dir = "../../uploads/images/"; //delimito la cartella degli upload 
+    $target_file = $target_dir . basename($file["name"]); // $_FILES["file"]["name"] decido che nome deve avere il file, in questo caso posso settare un override
+    $continue = true; // variabile accessoria per i controlli
+    $file_type = explode("/", strtolower($file["type"]))[1]; //recupero il tipo di file, di solito il fo0rmato è [gruppo generico]/[estensione specifica]
 
-$lunghezza_prodotti=count($_POST["SKU"]);
 
-for ($i=0; $i < $lunghezza_prodotti; $i++) {
-  $array_pulito[$i]=[
-    "SKU"=>$_POST["SKU"][$i],
-    "product"=>$_POST["product"][$i],
-    "description"=>$_POST["description"][$i],
-    "stock"=>$_POST["stock"][$i],
-    "categories"=>$_POST["categories"][$i],
-    "price"=>$_POST["price"][$i],
-    "file"=>$_FILES["file"][$i],
-  ];
-  
-}
+    if (file_exists($target_file . "." . $file_type)) {
+      echo "<script>alert(\"Il file esiste già\")</script>";
 
-$values_string= "";
-$bindings_type_string= "";
-$bindings_values_array= [];
-//$stmt->bind_param('ss', ...['DEU', 'POL']);
+      die();
+    }
 
-foreach ($array_pulito as $index => $product) {
-  $values_string.="(
+    if (
+      $file_type != "jpg" && $file_type != "png" && $file_type != "jpeg"
+      && $file_type != "gif"
+    ) {
+      echo "<script>alert(\"Puoi caricare solo foto\")</script>";
+
+      die();
+    }
+
+    if ($file['size'] > 3145728) { // maggiore di 3MB
+      echo "<script>alert(\"File troppo grande\")</script>";
+
+      die();
+    }
+
+
+    if (move_uploaded_file($file["tmp_name"], $target_file)) { //muovo il file dalla richiesta al path (viene scritto un nuovo file e copiato il contenuto)
+      echo "<script>alert(\"File caricato\")</script>";
+    } else {
+      //se dovesse fallire, ritorno un errore
+      echo "<script>alert(\"Errore nel caricamento del file\")</script>";
+    }
+  }
+
+  $array_pulito = [];
+
+  $lunghezza_prodotti = count($_POST["SKU"]);
+
+  for ($i = 0; $i < $lunghezza_prodotti; $i++) {
+    $array_pulito[$i] = [
+      "SKU" => $_POST["SKU"][$i],
+      "product" => $_POST["product"][$i],
+      "description" => $_POST["description"][$i],
+      "stock" => $_POST["stock"][$i],
+      "categories" => $_POST["categories"][$i],
+      "price" => $_POST["price"][$i],
+
+    ];
+  }
+  for ($i = 0; $i < $lunghezza_prodotti; $i++) {
+
+    $array_pulito[$i] = array_merge(
+      $array_pulito[$i],
+      [
+        "file" => [
+          "name" => $_FILES["file"]["name"][$i],
+          "full_path" => $_FILES["file"]["full_path"][$i],
+          "type" => $_FILES["file"]["type"][$i],
+          "tmp_name" => $_FILES["file"]["tmp_name"][$i]
+        ]
+      ]
+    );
+  }
+
+
+
+  $values_string = "";
+  $bindings_type_string = "";
+  $bindings_values_array = [];
+  //$stmt->bind_param('ss', ...['DEU', 'POL']);
+
+
+
+
+  foreach ($array_pulito as $index => $product) {
+    $values_string .= "(
     ?,
     ?,
     ?,
@@ -40,48 +95,18 @@ foreach ($array_pulito as $index => $product) {
     ?,
     ? )";
 
-    if($index<(count($array_pulito)-1)){
-      $values_string.=",";
+    if ($index < (count($array_pulito) - 1)) {
+      $values_string .= ",";
     }
 
-    $bindings_type_string.="sssisd";
-    $bindings_values_array=array_merge($bindings_values_array, [ $product["SKU"], $product["product"], $product["description"], $product["stock"], $product["categories"], $product["price"]]);
-}
+    $bindings_type_string .= "sssisd";
+    $bindings_values_array = array_merge($bindings_values_array, [$product["SKU"], $product["product"], $product["description"], $product["stock"], $product["categories"], $product["price"]]);
 
-  // $target_dir = "../../uploads/images/"; //delimito la cartella degli upload 
-  // $target_file = $target_dir . basename($_FILES["file"]["name"]); // $_FILES["file"]["name"] decido che nome deve avere il file, in questo caso posso settare un override
-  // $continue = true; // variabile accessoria per i controlli
-  // $file_type = explode("/", strtolower($_FILES["file"]["type"]))[1]; //recupero il tipo di file, di solito il fo0rmato è [gruppo generico]/[estensione specifica]
+    echo var_dump($product);
+    saveImage($product["file"]);
+  }
 
 
-  // if (file_exists($$target_file . "." . $file_type)) {
-  //   echo "<script>alert(\"Il file esiste già\")</script>";
-
-  //   die();
-  // }
-
-  // if (
-  //   $file_type != "jpg" && $file_type != "png" && $file_type != "jpeg"
-  //   && $file_type != "gif"
-  // ) {
-  //   echo "<script>alert(\"Puoi caricare solo foto\")</script>";
-
-  //   die();
-  // }
-
-  // if ($_FILES['file']['size'] > 3145728) { // maggiore di 3MB
-  //   echo "<script>alert(\"File troppo grande\")</script>";
-
-  //   die();
-  // }
-
-
-  // if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file . "." . $file_type)) { //muovo il file dalla richiesta al path (viene scritto un nuovo file e copiato il contenuto)
-  //   echo "<script>alert(\"File caricato\")</script>";
-  // } else {
-  //   //se dovesse fallire, ritorno un errore
-  //   echo "<script>alert(\"Errore nel caricamento del file\")</script>";
-  // }
 
   $SKU = $_POST["SKU"];
   $name = $_POST["product"];
@@ -102,7 +127,7 @@ INSERT INTO products(
     categories,
     price
     ) 
-VALUES ".$values_string
+VALUES " . $values_string
   );
 
   $query_preparata->bind_param($bindings_type_string, ...$bindings_values_array);
@@ -143,7 +168,7 @@ VALUES ".$values_string
   include("../menu.php");
   ?>
   <form method="post" class="form-example" id="form" enctype="multipart/form-data">
-<div class="product-lines">
+    <div class="product-lines">
       <div class="form-example">
         <label for="name">Nome: </label>
         <input type="text" name="product[]" id="name" <?php echo isset($name) ? "value='" . $nome . "'" : "" ?> required />
@@ -171,8 +196,8 @@ VALUES ".$values_string
         <input type="number" name="price[]" id="price" step="0.01" <?php echo isset($price) ? "value='" . $price . "'" : "" ?> />
       </div>
       <input type="file" name="file[]" accept="image/png, image/jpeg">
-</div> 
-  <div class="product-lines">
+    </div>
+    <div class="product-lines">
       <div class="form-example">
         <label for="name">Nome: </label>
         <input type="text" name="product[]" id="name" <?php echo isset($name) ? "value='" . $nome . "'" : "" ?> required />
@@ -200,7 +225,7 @@ VALUES ".$values_string
         <input type="number" name="price[]" id="price" step="0.01" <?php echo isset($price) ? "value='" . $price . "'" : "" ?> />
       </div>
       <input type="file" name="file[]" accept="image/png, image/jpeg">
-</div>   
+    </div>
 
     <div class="form-example">
       <input type="submit" name="submit" value="invia" />
