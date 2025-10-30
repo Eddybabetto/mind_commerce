@@ -168,7 +168,7 @@ VALUES " . $values_string
   include("../menu.php");
   ?>
   <form method="post" class="form-example" id="form" enctype="multipart/form-data">
-    <div class="product-lines">
+    <div class="product-lines" id="product-line">
       <div class="form-example">
         <label for="name">Nome: </label>
         <input type="text" name="product[]" id="name" <?php echo isset($name) ? "value='" . $nome . "'" : "" ?> required />
@@ -197,36 +197,9 @@ VALUES " . $values_string
       </div>
       <input type="file" name="file[]" accept="image/png, image/jpeg">
     </div>
-    <div class="product-lines">
-      <div class="form-example">
-        <label for="name">Nome: </label>
-        <input type="text" name="product[]" id="name" <?php echo isset($name) ? "value='" . $nome . "'" : "" ?> required />
-      </div>
-      <div class="form-example">
-        <label for="SKU">SKU: </label>
-        <input type="text" name="SKU[]" id="SKU" <?php echo isset($SKU) ? "value='" . $SKU . "'" : "" ?> required />
-      </div>
-      <div class="form-example">
-        <label for="description">Descrizione: </label>
-        <textarea id="story" name="description[]" rows="5" cols="33" required>
-            <?php echo isset($description) ?  $description : "" ?>
-        </textarea>
-      </div>
-      <div class="form-example">
-        <label for="stock">Giacenza: </label>
-        <input type="number" name="stock[]" <?php echo isset($stock) ? "value='" . $stock . "'" : "" ?> id="stock" required />
-      </div>
-      <div class="form-example">
-        <label for="categories">Categoria: </label>
-        <input type="text" name="categories[]" id="categories" <?php echo isset($categories) ? "value='" . $categories . "'" : "" ?> />
-      </div>
-      <div class="form-example">
-        <label for="price">Prezzo: </label>
-        <input type="number" name="price[]" id="price" step="0.01" <?php echo isset($price) ? "value='" . $price . "'" : "" ?> />
-      </div>
-      <input type="file" name="file[]" accept="image/png, image/jpeg">
-    </div>
+    <hr>
 
+    <hr>
     <div class="form-example">
       <input type="submit" name="submit" value="invia" />
     </div>
@@ -234,6 +207,39 @@ VALUES " . $values_string
   </form>
 
 
+  <button id="duplica">Aggiungi prodotto</button>
+
 </body>
+
+
+
+<script>
+  function clearForm(cloned_element) {
+    let all_input = cloned_element.querySelectorAll("input")
+    let all_input_array = Array.from(all_input)
+    all_input_array.forEach(input => {
+      input.value = ""
+      input.innerText = ""
+    })
+
+  }
+
+  let btnDuplica = document.getElementById('duplica'); // Pulsante per Disconnettersi in Alto a Destra 
+  btnDuplica.addEventListener('click', (event) => {
+      event.preventDefault();
+      let prodottoDaCopiare = document.getElementById('product-line');
+      console.log(prodottoDaCopiare);
+      // let copiaProdotto = structuredClone(prodottoDaCopiare);
+      let copiaProdotto = prodottoDaCopiare.cloneNode(true);
+      clearForm(copiaProdotto)
+      copiaProdotto.setAttribute('id', "");
+      let contenitore = document.getElementById('form');
+      document.quer
+      contenitore.insertBefore(copiaProdotto, prodottoDaCopiare);
+    }
+
+  );
+</script>
+
 
 </html>
