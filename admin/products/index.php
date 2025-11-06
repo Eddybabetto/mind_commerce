@@ -60,7 +60,7 @@ require("../../db/session.php");
             <a class="button-delete" href="delete.php?id=<?= $prodotto["id"] ?>&soft_delete=true"><button>Elimina Prodotto</button></a>
             <button class="button-edit">Modifica Prodotto</button>
             <button hidden class="button-reset">reset Prodotto</button>
-            <button class="button-save">salva Prodotto</button>
+            <button hidden class="button-save">salva Prodotto</button>
           </td>
         </tr>
 
@@ -124,15 +124,14 @@ require("../../db/session.php");
   Array.from(bottoni_edit).forEach(btn => {
     btn.addEventListener("click", (event) => {
       //event.target è il bottone edit in questa circostanza
-      event.target.hidden=true //nascondo bottone edit 
+      event.target.hidden = true //nascondo bottone edit 
       let button_delete = event.target.parentNode.querySelector(".button-delete")
-      button_delete.hidden=true
+      button_delete.hidden = true
       let button_reset = event.target.parentNode.querySelector(".button-reset")
-      button_reset.hidden=false
-
-
+      button_reset.hidden = false
+      let button_save = event.target.parentNode.querySelector(".button-save")
+      button_save.hidden = false
       let tr_ref = event.target.parentNode.parentNode
-
       let all_tds = Array.from(tr_ref.querySelectorAll("td"))
 
       original_data[all_tds[0].innerText] = {
@@ -145,61 +144,48 @@ require("../../db/session.php");
         prezzo: all_tds[6].innerText,
       }
 
-      // original_data = {
-      //   9: {
-      //     id: 9,
-      //     sku: "sku 9"
-      //   }
-      // }
-
       let inputsku = document.createElement("input")
       inputsku.value = structuredClone(original_data[all_tds[0].innerText].sku)
-      inputsku.name="sku"
-      inputsku.id="sku-product-"+all_tds[0].innerText
-      inputsku.type="text"
+      inputsku.name = "sku"
+      inputsku.id = "sku-product-" + all_tds[0].innerText
+      inputsku.type = "text"
+      all_tds[1].replaceChildren(inputsku)
 
-    all_tds[1].replaceChildren(inputsku)
+      let input_nome_prodotto = document.createElement("input")
+      input_nome_prodotto.value = structuredClone(original_data[all_tds[0].innerText].nome_prodotto)
+      input_nome_prodotto.name = "nome_prodotto"
+      input_nome_prodotto.id = "nome_prodotto-product-" + all_tds[0].innerText
+      input_nome_prodotto.type = "text"
+      all_tds[2].replaceChildren(input_nome_prodotto)
 
-    let input_nome_prodotto = document.createElement("input")
-    input_nome_prodotto.value=structuredClone(original_data[all_tds[0].innerText].nome_prodotto)
-    input_nome_prodotto.name="nome_prodotto"
-    input_nome_prodotto.id="nome_prodotto-product-"+all_tds[0].innerText
-    input_nome_prodotto.type="text"
+      let input_descrizione = document.createElement("input")
+      input_descrizione.value = structuredClone(original_data[all_tds[0].innerText].descrizione)
+      input_descrizione.name = "descrizione"
+      input_descrizione.id = "descrizione-product-" + all_tds[0].innerText
+      input_descrizione.type = "text"
+      all_tds[3].replaceChildren(input_descrizione)
 
-    all_tds[2].replaceChildren(input_nome_prodotto)
-    let input_descrizione = document.createElement("input")
-    input_descrizione.value=structuredClone(original_data[all_tds[0].innerText].descrizione)
-    input_descrizione.name="descrizione"
-    input_descrizione.id="descrizione-product-"+all_tds[0].innerText
-    input_descrizione.type="text"
+      let input_giacenza = document.createElement("input")
+      input_giacenza.value = structuredClone(original_data[all_tds[0].innerText].giacenza)
+      input_giacenza.name = "giacenza"
+      input_giacenza.id = "giacenza-product-" + all_tds[0].innerText
+      input_giacenza.type = "number"
+      all_tds[4].replaceChildren(input_giacenza)
 
-    all_tds[3].replaceChildren(input_descrizione)
-   let input_giacenza = document.createElement("input")
-    input_giacenza.value=structuredClone(original_data[all_tds[0].innerText].giacenza)
-    input_giacenza.name="giacenza"
-    input_giacenza.id="giacenza-product-"+all_tds[0].innerText
-    input_giacenza.type="number"
+      let input_categoria = document.createElement("input")
+      input_categoria.value = structuredClone(original_data[all_tds[0].innerText].categoria)
+      input_categoria.name = "categoria"
+      input_categoria.id = "categoria-product-" + all_tds[0].innerText
+      input_categoria.type = "text"
+      all_tds[5].replaceChildren(input_categoria)
 
-    all_tds[4].replaceChildren(input_giacenza)
-  
-    let input_categoria = document.createElement("input")
-
-    input_categoria.value=structuredClone(original_data[all_tds[0].innerText].categoria)
-    input_categoria.name="categoria"
-    input_categoria.id="categoria-product-"+all_tds[0].innerText
-    input_categoria.type="text"
-
-    all_tds[5].replaceChildren(input_categoria)
-    let input_prezzo = document.createElement("input")
-
-    input_prezzo.value=structuredClone(original_data[all_tds[0].innerText].prezzo)
-    input_prezzo.name="prezzo"
-    input_prezzo.id="prezzo-product-"+all_tds[0].innerText
-    input_prezzo.type="number"
-    input_prezzo.step="0.01"
-  
-
-    all_tds[6].replaceChildren(input_prezzo)
+      let input_prezzo = document.createElement("input")
+      input_prezzo.value = structuredClone(original_data[all_tds[0].innerText].prezzo)
+      input_prezzo.name = "prezzo"
+      input_prezzo.id = "prezzo-product-" + all_tds[0].innerText
+      input_prezzo.type = "number"
+      input_prezzo.step = "0.01"
+      all_tds[6].replaceChildren(input_prezzo)
 
     })
 
@@ -209,63 +195,65 @@ require("../../db/session.php");
   Array.from(bottoni_reset).forEach(btn => {
     btn.addEventListener("click", (event) => {
       let tr_ref = event.target.parentNode.parentNode
-
       //event.target è il bottone reset in questa circostanza
-      event.target.hidden=true //nascondo bottone reset 
+      event.target.hidden = true //nascondo bottone reset 
       let button_delete = event.target.parentNode.querySelector(".button-delete")
-      button_delete.hidden=false
+      button_delete.hidden = false
       let button_edit = event.target.parentNode.querySelector(".button-edit")
-      button_edit.hidden=false
-
+      button_edit.hidden = false
       let all_tds = Array.from(tr_ref.querySelectorAll("td"))
-
-
       all_tds[1].innerText = original_data[all_tds[0].innerText].sku
       all_tds[2].innerText = original_data[all_tds[0].innerText].nome_prodotto
       all_tds[3].innerText = original_data[all_tds[0].innerText].descrizione
       all_tds[4].innerText = original_data[all_tds[0].innerText].giacenza
       all_tds[5].innerText = original_data[all_tds[0].innerText].categoria
       all_tds[6].innerText = original_data[all_tds[0].innerText].prezzo
-     
+    });
+  });
 
+
+  let bottoni_save = document.getElementsByClassName("button-save")
+  Array.from(bottoni_save).forEach(btn => {
+    btn.addEventListener("click", (event) => {
+      salvaModificheProdotti(event.target.parentNode.parentNode)
     })
-
   })
 
-
-   let bottoni_save = document.getElementsByClassName("button-save")
-
-   Array.from(bottoni_save).forEach(btn =>{
-    btn.addEventListener("click", (event)=>{
-       populateFormData(event.target.parentNode.parentNode)
-    })
-   })
-
-function populateFormData(tr){
-  let form = new FormData()
-      let td_id = Array.from(tr.querySelectorAll("td"))[0]
-      console.log(td_id.innerText)
-      let id_prodotto=td_id.innerText
-
-
-      let inputs = Array.from(tr.querySelectorAll("input[id$=-product-"+id_prodotto+"]"))
-
-      console.log("input[id$=-product-"+id_prodotto+"]")
-      console.log(inputs)
-
-      form.append("id_product", id_prodotto)
-      inputs.forEach(input=>{
-          form.append(input.id.replace("-product-"+id_prodotto, "") , input.value)
-      })
-
-      fetch("/test", {
-        method: "POST",
-        body: form
-      })
-}
-
-
-
+  async function salvaModificheProdotti(tr) {
+    let form = new FormData()
+    let td_id = Array.from(tr.querySelectorAll("td"))[0]
+    let id_prodotto = td_id.innerText
+    let inputs = Array.from(tr.querySelectorAll("input[id$=-product-" + id_prodotto + "]"))
+    form.append("id_product", id_prodotto)
+    inputs.forEach(input => {
+      form.append(input.id.replace("-product-" + id_prodotto, ""), input.value)
+    });
+    const response = await fetch("<?php echo getenvterm("DOMAIN") ?>/admin/api/products/update.php", {
+      method: "POST",
+      body: form
+    });
+    risposta = await response.json()
+    if (risposta) {
+      // Aggiorno la tabella con i nuovi valori
+      let all_tds = Array.from(tr.querySelectorAll("td"))
+      all_tds[1].innerText = inputs[0].value;
+      all_tds[2].innerText = inputs[1].value;
+      all_tds[3].innerText = inputs[2].value;
+      all_tds[4].innerText = inputs[3].value;
+      all_tds[5].innerText = inputs[4].value;
+      all_tds[6].innerText = inputs[5].value;
+      let button_save = tr.querySelector(".button-save");
+      button_save.hidden = true;
+      let button_reset = tr.querySelector(".button-reset");
+      button_reset.hidden = true;
+      let button_delete = tr.querySelector(".button-delete");
+      button_delete.hidden = false;
+      let button_edit = tr.querySelector(".button-edit");
+      button_edit.hidden = false;
+    } else {
+      alert('Il Prodotto non è stato aggiornato per qualche errore');
+    }
+  }
 </script>
 
 </html>

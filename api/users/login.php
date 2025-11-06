@@ -22,9 +22,9 @@ if (count($risultati_utente_trovato_db) != 0) {
    $_SESSION["utente"] = json_encode($risultati_utente_trovato_db[0]);
    $utente = $risultati_utente_trovato_db[0];
    if ($utente["administrator"] == 1) {
-      echo json_encode(["redirect" => "admin/index.php"]);
+      echo json_encode(["redirect" =>  getenvterm("DOMAIN")."admin/index.php"]);
    } else {
-      echo json_encode(["redirect" => ""]);
+      echo json_encode(["redirect" => getenvterm("DOMAIN")]);
    }
 
    die();
