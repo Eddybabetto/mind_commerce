@@ -11,7 +11,8 @@ $name = $_POST["nome_prodotto"];
 $description = $_POST["descrizione"];
 $stock = $_POST["giacenza"];
 $categories = $_POST["categoria"];
-$price = $_POST["prezzo"]; // Ho dovuto togliere || 0 perchè lasciandolo a db memorizzare sempre 1 come prezzo
+$price = $_POST["prezzo"] ?? 0; 
+
 $updated_at = date("Y-m-d H:i:s", time());
 
 $query_preparata = $mysqli->prepare(

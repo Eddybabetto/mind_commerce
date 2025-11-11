@@ -7,7 +7,7 @@ if (isset($_POST["submit"])) {
 
   // crea prodotto
 
-  function saveImage($file)
+  function saveImage($mysqli,  $file, $id_prodotto)
   {
 
     $target_dir = "../../uploads/images/"; //delimito la cartella degli upload 
@@ -39,6 +39,28 @@ if (isset($_POST["submit"])) {
 
 
     if (move_uploaded_file($file["tmp_name"], $target_file)) { //muovo il file dalla richiesta al path (viene scritto un nuovo file e copiato il contenuto)
+
+
+
+  $query_preparata_file = $mysqli->prepare(
+          "
+      INSERT INTO images(
+          id_product,
+          filename
+          ) 
+      VALUES (
+          ?,
+          ?)"
+        );
+
+    $bindings_type_string = "is";
+    $bindings_values_array =  [$id_prodotto, $file["name"]];
+    $query_preparata_file->bind_param($bindings_type_string, ...$bindings_values_array);
+
+   
+    $query_preparata_file->execute();
+
+
       echo "<script>alert(\"File caricato\")</script>";
     } else {
       //se dovesse fallire, ritorno un errore
@@ -84,30 +106,6 @@ if (isset($_POST["submit"])) {
   //$stmt->bind_param('ss', ...['DEU', 'POL']);
 
 
-
-
-  foreach ($array_pulito as $index => $product) {
-    $values_string .= "(
-    ?,
-    ?,
-    ?,
-    ?,
-    ?,
-    ? )";
-
-    if ($index < (count($array_pulito) - 1)) {
-      $values_string .= ",";
-    }
-
-    $bindings_type_string .= "sssisd";
-    $bindings_values_array = array_merge($bindings_values_array, [$product["SKU"], $product["product"], $product["description"], $product["stock"], $product["categories"], $product["price"]]);
-
- 
-    saveImage($product["file"]);
-  }
-
-
-
   $SKU = $_POST["SKU"];
   $name = $_POST["product"];
   $description = $_POST["description"];
@@ -116,6 +114,12 @@ if (isset($_POST["submit"])) {
   $price = $_POST["price"];
 
   $mysqli = open_db_connection();
+
+  $mysqli->begin_transaction();
+
+
+  foreach ($array_pulito as $index => $product) {
+
 
   $query_preparata = $mysqli->prepare(
     "
@@ -127,17 +131,31 @@ INSERT INTO products(
     categories,
     price
     ) 
-VALUES " . $values_string
+VALUES (
+    ?,
+    ?,
+    ?,
+    ?,
+    ?,
+    ? )"
   );
 
-  $query_preparata->bind_param($bindings_type_string, ...$bindings_values_array);
+    $bindings_type_string = "sssisd";
+    $bindings_values_array =  [$product["SKU"], $product["product"], $product["description"], $product["stock"], $product["categories"], $product["price"]];
+     
+    $query_preparata->bind_param($bindings_type_string, ...$bindings_values_array);
+    $result = $query_preparata->execute();
+ 
+    if ($result == false){
+      $mysqli->rollback();
+       echo "<script>alert(\"errore inserimento di un prodotto, abortisco transazione\")</script>";
+       die();
+    }
+    $id_prodotto = $mysqli->insert_id; // id del nostro prodotto
 
-  try {
-    $result = $query_preparata->execute(); //ritorna true o false in base se la query è stata fatta o no
-
-  } catch (mysqli_sql_exception) {
-    printf("Error - SQLSTATE %s.\n", $mysqli->sqlstate);
+    saveImage( $mysqli, $product["file"], $id_prodotto);
   }
+  $mysqli->commit();
 
   echo "<script>alert(\"Prodotto inserito correttamente\")</script>";
 
@@ -148,6 +166,7 @@ VALUES " . $values_string
   unset($stock);
   unset($categories);
   unset($price);
+
 
   close_db_connection($mysqli);
 }

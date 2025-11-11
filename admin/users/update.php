@@ -21,7 +21,7 @@ if (isset($_POST["submit"])) {
   $cognome = $_POST["cognome"];
   $cf = $_POST["cf"];
   $telefono = $_POST["telefono"];
-  $admin = $_POST["admin"] || 0;
+  $admin = $_POST["admin"] ?? 0;
 
   // select * da crud
 
